@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Central Board of Secondary Education",
+    "code": "CBSE",
+    "pattern_hints": ["CENTRAL BOARD OF SECONDARY EDUCATION", "CBSE", "ALL INDIA SENIOR SCHOOL", "ALL INDIA SECONDARY SCHOOL"]
+  },
+  {
+    "name": "Council for the Indian School Certificate Examinations",
+    "code": "ICSE",
+    "pattern_hints": ["COUNCIL FOR THE INDIAN SCHOOL CERTIFICATE", "ICSE", "ISC", "CISCE"]
+  },
+  {
+    "name": "Maharashtra State Board (SSC)",
+    "code": "MH_SSC",
+    "pattern_hints": ["MAHARASHTRA STATE BOARD", "MSBSHSE", "SECONDARY AND HIGHER SECONDARY EDUCATION, PUNE"]
+  },
+  {
+    "name": "Maharashtra State Board (HSC)",
+    "code": "MH_HSC",
+    "pattern_hints": ["MAHARASHTRA STATE BOARD", "HSC EXAMINATION", "HIGHER SECONDARY CERTIFICATE"]
+  },
+  {
+    "name": "Karnataka Secondary Education Examination Board",
+    "code": "KA_SSLC",
+    "pattern_hints": ["KARNATAKA SECONDARY EDUCATION", "KSEAB", "KSEEB", "PUC", "PRE UNIVERSITY", "SSLC"]
+  },
+  {
+    "name": "Tamil Nadu State Board",
+    "code": "TN",
+    "pattern_hints": ["TAMIL NADU", "DIRECTORATE OF GOVERNMENT EXAMINATIONS", "TAMILNADU", "GOVERNMENT OF TAMIL NADU"]
+  },
+  {
+    "name": "Rajasthan Board of Secondary Education",
+    "code": "RAJ",
+    "pattern_hints": ["RAJASTHAN BOARD", "RBSE", "BSER", "BOARD OF SECONDARY EDUCATION RAJASTHAN", "MADHYAMIK SHIKSHA BOARD RAJASTHAN"]
+  },
+  {
+    "name": "Uttar Pradesh Madhyamik Shiksha Parishad",
+    "code": "UP",
+    "pattern_hints": ["UTTAR PRADESH", "UP BOARD", "MADHYAMIK SHIKSHA PARISHAD", "BOARD OF HIGH SCHOOL AND INTERMEDIATE EDUCATION", "PRAYAGRAJ"]
+  },
+  {
+    "name": "Gujarat Secondary and Higher Secondary Education Board",
+    "code": "GJ",
+    "pattern_hints": ["GUJARAT SECONDARY", "GSEB", "GSHSEB", "GUJARAT STATE EDUCATION BOARD", "GUJARAT BOARD"]
+  },
+  {
+    "name": "West Bengal Board",
+    "code": "WB",
+    "pattern_hints": ["WEST BENGAL", "WBBSE", "WBCHSE"]
+  }
+]
