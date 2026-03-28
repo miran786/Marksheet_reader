@@ -54,7 +54,8 @@ def process_marksheet(marksheet_id: int) -> None:
             if settings.OCR_ENGINE == "tesseract":
                 processed_image = preprocess_for_ocr(image)
             else:
-                processed_image = image
+                from app.services.image_preprocess import preprocess_for_easyocr
+                processed_image = preprocess_for_easyocr(image)
         except Exception as e:
             logger.error(f"Image preprocessing failed for marksheet {marksheet_id}: {e}")
             marksheet.processing_status = "failed"

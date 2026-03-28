@@ -24,19 +24,69 @@ def load_image(file_path: str | Path) -> Image.Image:
 
 
 def _pdf_to_image(pdf_path: Path) -> Image.Image:
-    """Convert first page of PDF to image."""
+    """Convert first page of PDF to image using PyMuPDF."""
     try:
-        from pdf2image import convert_from_path
-        images = convert_from_path(str(pdf_path), first_page=1, last_page=1, dpi=300)
-        if images:
-            return images[0]
-        raise ValueError("No pages found in PDF")
+        import fitz  # PyMuPDF
+        doc = fitz.open(str(pdf_path))
+        page = doc[0]
+        mat = fitz.Matrix(3.0, 3.0)  # 3x zoom = ~216 DPI
+        pix = page.get_pixmap(matrix=mat)
+        img_bytes = pix.tobytes("png")
+        doc.close()
+        from io import BytesIO
+        return Image.open(BytesIO(img_bytes))
     except ImportError:
-        raise RuntimeError(
-            "pdf2image is required for PDF support. "
-            "Install it with: pip install pdf2image. "
-            "Also ensure poppler is installed on your system."
-        )
+        raise RuntimeError("PyMuPDF (pymupdf) is required for PDF support. pip install pymupdf")
+
+
+def get_pdf_page_count(pdf_path: str | Path) -> int:
+    """Return page count of a PDF file."""
+    try:
+        import fitz
+        doc = fitz.open(str(pdf_path))
+        count = len(doc)
+        doc.close()
+        return count
+    except Exception:
+        return 1
+
+
+def pdf_page_to_image(pdf_path: str | Path, page_num: int = 0) -> Image.Image:
+    """Convert a specific page of a PDF to PIL Image."""
+    import fitz
+    doc = fitz.open(str(pdf_path))
+    page = doc[page_num]
+    mat = fitz.Matrix(3.0, 3.0)
+    pix = page.get_pixmap(matrix=mat)
+    img_bytes = pix.tobytes("png")
+    doc.close()
+    from io import BytesIO
+    return Image.open(BytesIO(img_bytes))
+
+
+def preprocess_for_easyocr(image: Image.Image) -> Image.Image:
+    """Light preprocessing safe for EasyOCR (no aggressive binarization)."""
+    # Convert to RGB if needed
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+
+    # Upscale if image is small
+    w, h = image.size
+    if w < 1200:
+        scale = 1800 / w
+        new_size = (int(w * scale), int(h * scale))
+        image = image.resize(new_size, Image.LANCZOS)
+
+    # Enhance contrast
+    image = ImageEnhance.Contrast(image).enhance(1.5)
+
+    # Enhance sharpness
+    image = ImageEnhance.Sharpness(image).enhance(1.3)
+
+    # Denoise
+    image = image.filter(ImageFilter.MedianFilter(size=3))
+
+    return image
 
 
 def preprocess_for_ocr(image: Image.Image) -> Image.Image:

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Table, Tag, Button, Typography, Space, Select, Popconfirm, Skeleton, Empty, Card, App } from 'antd';
-import { EyeOutlined, CheckOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import { EyeOutlined, CheckOutlined, DeleteOutlined, UploadOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { getMarksheets, verifyMarksheet, deleteMarksheet } from '../api/client';
+import { getMarksheets, verifyMarksheet, deleteMarksheet, bulkVerifyMarksheets } from '../api/client';
 import type { MarksheetResponse } from '../types';
 
 const statusColor: Record<string, string> = {
@@ -17,6 +17,7 @@ export default function Marksheets() {
   const [data, setData] = useState<MarksheetResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
+  const [bulkVerifying, setBulkVerifying] = useState(false);
   const navigate = useNavigate();
   const { message } = App.useApp();
 
@@ -37,6 +38,19 @@ export default function Marksheets() {
       load();
     } catch {
       message.error('Failed to verify marksheet');
+    }
+  };
+
+  const handleBulkVerify = async () => {
+    setBulkVerifying(true);
+    try {
+      const result = await bulkVerifyMarksheets(90);
+      message.success(`Auto-verified: ${result.verified ?? 0} marksheets verified, ${result.skipped ?? 0} skipped`);
+      load();
+    } catch {
+      message.error('Failed to bulk verify marksheets');
+    } finally {
+      setBulkVerifying(false);
     }
   };
 
@@ -123,6 +137,21 @@ export default function Marksheets() {
           ]}
         />
         <Button onClick={load}>Refresh</Button>
+        <Popconfirm
+          title="Auto-Verify Marksheets"
+          description="This will verify all marksheets with confidence ≥ 90%. Continue?"
+          onConfirm={handleBulkVerify}
+          okText="Yes, Verify"
+          cancelText="Cancel"
+        >
+          <Button
+            type="primary"
+            icon={<ThunderboltOutlined />}
+            loading={bulkVerifying}
+          >
+            Auto-Verify (≥90%)
+          </Button>
+        </Popconfirm>
       </Space>
       {data.length === 0 ? (
         <Card>

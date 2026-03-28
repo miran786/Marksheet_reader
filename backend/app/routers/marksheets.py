@@ -70,6 +70,43 @@ def list_marksheets(
     return [_build_marksheet_response(m) for m in marksheets]
 
 
+@router.post("/bulk-verify")
+def bulk_verify_marksheets(
+    min_confidence: float = Query(90.0, ge=0, le=100),
+    reviewer: str = "auto",
+    db: Session = Depends(get_db),
+):
+    """Auto-verify all marks with confidence >= min_confidence across all marksheets in 'review' status."""
+    marks_in_review = db.query(Mark).join(
+        Marksheet, Mark.marksheet_id == Marksheet.id
+    ).filter(
+        Marksheet.processing_status == "review",
+        Mark.is_verified == False,
+        Mark.mapping_confidence >= min_confidence,
+    ).all()
+
+    verified_count = 0
+    marksheet_ids = set()
+    for mark in marks_in_review:
+        mark.is_verified = True
+        verified_count += 1
+        marksheet_ids.add(mark.marksheet_id)
+
+    # For each affected marksheet, check if all marks are now verified → set completed
+    for ms_id in marksheet_ids:
+        ms = db.query(Marksheet).filter(Marksheet.id == ms_id).first()
+        if ms and all(m.is_verified for m in ms.marks):
+            ms.processing_status = "completed"
+            ms.reviewed_by = reviewer
+
+    db.commit()
+    return {
+        "verified_marks": verified_count,
+        "affected_marksheets": len(marksheet_ids),
+        "min_confidence_used": min_confidence,
+    }
+
+
 @router.get("/{marksheet_id}/image")
 def get_marksheet_image(marksheet_id: int, db: Session = Depends(get_db)):
     """Serve the uploaded marksheet image by ID."""

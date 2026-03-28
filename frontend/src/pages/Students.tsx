@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Table, Typography, Input, Space, Tag } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Table, Typography, Input, Space, Tag, Button } from 'antd';
+import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { getStudents } from '../api/client';
 import type { StudentResponse } from '../types';
 
@@ -10,6 +11,7 @@ export default function Students() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
   const load = () => {
     setLoading(true);
@@ -23,7 +25,17 @@ export default function Students() {
 
   const columns = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 60 },
-    { title: 'Name', dataIndex: 'name', key: 'name' },
+    {
+      title: 'Name', dataIndex: 'name', key: 'name',
+      render: (v: string, record: StudentResponse) => (
+        <span
+          style={{ color: '#1677ff', cursor: 'pointer' }}
+          onClick={() => navigate(`/students/${record.id}`)}
+        >
+          {v}
+        </span>
+      ),
+    },
     { title: 'Roll Number', dataIndex: 'roll_number', key: 'roll' },
     {
       title: 'Board', dataIndex: 'board_name', key: 'board',
@@ -33,6 +45,18 @@ export default function Students() {
     { title: 'Exam Type', dataIndex: 'exam_type', key: 'type', render: (v: string | null) => v || '-' },
     { title: 'School', dataIndex: 'school_name', key: 'school', render: (v: string | null) => v || '-', ellipsis: true },
     { title: 'Marksheets', dataIndex: 'marksheet_count', key: 'ms_count' },
+    {
+      title: 'Profile', key: 'profile',
+      render: (_: unknown, record: StudentResponse) => (
+        <Button
+          size="small"
+          icon={<EyeOutlined />}
+          onClick={() => navigate(`/students/${record.id}`)}
+        >
+          Profile
+        </Button>
+      ),
+    },
   ];
 
   return (

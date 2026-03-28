@@ -81,6 +81,9 @@ export const verifyMarksheet = (id: number) =>
 export const deleteMarksheet = (id: number) =>
   api.delete(`/marksheets/${id}`).then(r => r.data);
 
+export const bulkVerifyMarksheets = (minConfidence = 90) =>
+  api.post(`/marksheets/bulk-verify?min_confidence=${minConfidence}`).then(r => r.data);
+
 // Students
 export const getStudents = (params?: { page?: number; page_size?: number; search?: string; board_id?: number }) =>
   api.get<StudentListResponse>('/students', { params }).then(r => r.data);

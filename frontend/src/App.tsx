@@ -9,6 +9,7 @@ import Upload from './pages/Upload';
 import Marksheets from './pages/Marksheets';
 import MarksheetDetail from './pages/MarksheetDetail';
 import Students from './pages/Students';
+import StudentProfile from './pages/StudentProfile';
 import MappingAdmin from './pages/MappingAdmin';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
@@ -81,6 +82,7 @@ function AppRoutes() {
         <Route path="/marksheets" element={<Marksheets />} />
         <Route path="/marksheets/:id" element={<MarksheetDetail />} />
         <Route path="/students" element={<Students />} />
+        <Route path="/students/:id" element={<StudentProfile />} />
         <Route path="/mappings" element={<MappingAdmin />} />
         <Route path="/settings" element={<Settings />} />
       </Route>
